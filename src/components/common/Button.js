@@ -4,6 +4,7 @@ import { ThemeContext } from '../../context/theme';
 
 function Button({ children }) {
   const { theme, setTheme } = useContext(ThemeContext);
+  console.log(ButtonComp);
   return (
     <ButtonComp themeMode={theme}>
       {children}
@@ -19,7 +20,7 @@ const ButtonComp = styled.button`
   border-color: ${props => props.theme.colors[props.themeMode].button.border};
   border-style: solid;
   border-radius: 3px;
-  transition: background-color 0.15s, border-color 0.15s;
+  /* transition: background-color 0.15s, border-color 0.15s; */
 
   &:hover {
     background-color: ${props => props.theme.colors[props.themeMode].button.hover.background};

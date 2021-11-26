@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { ThemeContext } from "../context/theme";
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Link } from "react-router-dom";
 
 function Header({ userId, handleUserIdUpdate }) {
@@ -24,9 +25,12 @@ function Header({ userId, handleUserIdUpdate }) {
 
   return (
     <HeaderBar themeMode={theme}>
-      <span class='left-icons'>
+      <span className='left-icons'>
         <GridViewIcon />
         <ListAltIcon />
+        <Link to='/calendar'>
+          <CalendarTodayIcon />
+        </Link>
         { theme === 'dark' ? <LightModeIcon onClick={() => setTheme('light')} /> : <DarkModeIcon onClick={() => setTheme('dark')} /> }
         
         
@@ -34,7 +38,7 @@ function Header({ userId, handleUserIdUpdate }) {
       <Link to='/'>
       <h1>AppliTracker</h1>
       </Link>
-      <span class='right-icons'>
+      <span className='right-icons'>
         <Link to='/login'>
           <LoginIcon />
         </Link>
@@ -50,6 +54,7 @@ const HeaderBar = styled.div`
   text-align: center;
   background-color: ${props => props.theme.colors[props.themeMode].header.background};
   color: ${props => props.theme.colors[props.themeMode].header.text};
+  border-radius: 3px;
 
   h1 {
     display: inline-block;

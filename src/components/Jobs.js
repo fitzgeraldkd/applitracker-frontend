@@ -9,15 +9,16 @@ function Body({ userId }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(status);
     if (status === 'rejected') navigate('/login');
   }, [status, navigate]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/applications?user_id=${userId}&login_token=${localStorage.getItem('login_token')}`)
-      .then(response => response.json())
-      .then(job => setJobs(job));
-  }, [userId])
+    if (status === 'success') {
+      fetch(`${process.env.REACT_APP_API_URL}/applications?user_id=${userId}&login_token=${localStorage.getItem('login_token')}`)
+        .then(response => response.json())
+        .then(job => setJobs(job));
+    }
+  }, [status, userId])
 
   return (
     <>

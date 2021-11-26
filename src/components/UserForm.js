@@ -18,7 +18,6 @@ function UserForm({ userId, handleUserIdUpdate }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(status);
     if (status === 'success') navigate('/');
   }, [status, navigate]);
 
@@ -50,11 +49,11 @@ function UserForm({ userId, handleUserIdUpdate }) {
           resetLoginData();
           setMessage('Successfully logged in!');
           setLoggedInUser(data);
-          navigate('/');
+          // navigate('/');
         } else {
           setMessage('Invalid login credentials.');
+          setDisableForm(false);
         }
-        setDisableForm(false);
       });
   };
 

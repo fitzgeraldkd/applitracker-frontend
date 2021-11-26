@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import React from 'react';
 
 function JobTable({ jobs }) {
 
@@ -12,12 +13,12 @@ function JobTable({ jobs }) {
       <span className='header'>Position</span>
       <span className='header'>Status</span>
       {jobs.map(job => (
-        <>
+        <React.Fragment key={job.id}>
           <span>{job.favorite ? <StarIcon /> : <StarBorderIcon />}</span>
           <span>{job.company}</span>
           <span>{job.position}</span>
           <span>{job.status}</span>
-        </>
+        </React.Fragment>
       ))}
     </Table>
   );

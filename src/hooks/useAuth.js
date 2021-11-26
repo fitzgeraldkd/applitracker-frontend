@@ -12,7 +12,6 @@ function useAuth(userId) {
     if (userId === null || loginToken === null) {
       setStatus('rejected');
     } else {
-      console.log(`${process.env.REACT_APP_API_URL}`)
       fetch(`${process.env.REACT_APP_API_URL}/users/${userId}?login_token=${loginToken}`)
         .then(resp => resp.json())
         .then(data => {
