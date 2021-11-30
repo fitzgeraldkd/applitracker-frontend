@@ -14,6 +14,7 @@ function UserForm({ userId, handleUserIdUpdate }) {
   });
   const { status } = useAuth(userId);
   const [message, setMessage] = useState();
+  const [newUser, setNewUser] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
   const navigate = useNavigate();
 
@@ -63,14 +64,18 @@ function UserForm({ userId, handleUserIdUpdate }) {
   };
 
   return (
-    <form onSubmit={handleFormSubmit}>
-      <Fieldset columns={2} disabled={disableForm}>
-        <Input name='username' label='Username:' value={loginData.username} onChange={handleFormChange} />
-        <Input type='password' name='password' label='Password:' value={loginData.password} onChange={handleFormChange} />
-        <span></span>
-        <Button type='submit'>Submit</Button>
-      </Fieldset>
-    </form>
+    <>
+      <form onSubmit={handleFormSubmit}>
+        <Fieldset columns={2} disabled={disableForm}>
+          <Input name='username' label='Username:' value={loginData.username} onChange={handleFormChange} />
+          <Input type='password' name='password' label='Password:' value={loginData.password} onChange={handleFormChange} />
+          {newUser && <Input type='password' name='passwordConfirm' label='Confirm:' value={loginData.passwordConfirm} onChange={handleFormChange} />}
+          <span></span>
+          <Button type='submit'>Submit</Button>
+        </Fieldset>
+      </form>
+      {newUser ? <Button onClick={() => setNewUser(false)}>Have an account?</Button> : <Button onClick={() => setNewUser(true)}>Need an account?</Button>}
+    </>
   );
 }
 

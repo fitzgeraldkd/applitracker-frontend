@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { useContext } from "react";
 import { ThemeContext } from '../../context/theme';
 
-function Button({ children }) {
+function Button({ children, ...buttonProps }) {
   const { theme, setTheme } = useContext(ThemeContext);
   console.log(ButtonComp);
   return (
-    <ButtonComp themeMode={theme}>
+    <ButtonComp themeMode={theme} {...buttonProps}>
       {children}
     </ButtonComp>
   )

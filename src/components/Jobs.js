@@ -9,15 +9,16 @@ function Body({ userId }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (status === 'rejected') navigate('/login');
+    // TODO: implement authorization/authentication
+    // if (status === 'rejected') navigate('/login');
   }, [status, navigate]);
 
   useEffect(() => {
-    if (status === 'success') {
-      fetch(`${process.env.REACT_APP_API_URL}/applications?user_id=${userId}&login_token=${localStorage.getItem('login_token')}`)
+    // if (status === 'success') {
+      fetch(`${process.env.REACT_APP_API_URL}/jobs?user_id=${userId}&login_token=${localStorage.getItem('login_token')}`)
         .then(response => response.json())
         .then(job => setJobs(job));
-    }
+    // }
   }, [status, userId])
 
   return (
