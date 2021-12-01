@@ -4,7 +4,6 @@ import { ThemeContext } from '../../context/theme';
 
 function Button({ children, ...buttonProps }) {
   const { theme, setTheme } = useContext(ThemeContext);
-  console.log(ButtonComp);
   return (
     <ButtonComp themeMode={theme} {...buttonProps}>
       {children}

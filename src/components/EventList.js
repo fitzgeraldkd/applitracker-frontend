@@ -1,10 +1,35 @@
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
-function EventList({ activeDay }) {
+import { ModalContext } from '../context/modal';
+
+import Button from './common/Button';
+
+function EventList({ activeDay, eventState }) {
+  const { setModal } = useContext(ModalContext);
+
+  const events = eventState.records
+    .filter(event => new Date(event.date).toDateString() === activeDay.toDateString())
+    .map(event => (
+      <React.Fragment key={event.id}>
+        <span>{new Date(event.date).toLocaleTimeString().replace(/:\d\d /, ' ')}</span>
+        <span>{event.title}</span>
+        <span>Company</span>
+        <span>Position</span>
+      </React.Fragment>
+    ));
 
   return (
     <EventListGrid>
-      Events for: {activeDay.toLocaleDateString()}
+      <span className='header'>
+        Events for: {activeDay.toLocaleDateString()}
+        <Button onClick={() => setModal('event')}>Add Event</Button>
+      </span>
+      <span>Time</span>
+      <span>Event</span>
+      <span>Company</span>
+      <span>Position</span>
+      {events}
     </EventListGrid>
   );
 }
@@ -12,4 +37,10 @@ function EventList({ activeDay }) {
 export default EventList;
 
 const EventListGrid = styled.div`
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+
+  .header {
+    grid-column: 1 / 5;
+  }
 `;

@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import { ThemeContext } from "../context/theme";
 import EventList from './EventList';
 
-function EventCalendar() {
+function EventCalendar({ eventState }) {
   const { theme } = useContext(ThemeContext);
   const [activeDay, setActiveDay] = useState(new Date());
 
@@ -15,9 +15,9 @@ function EventCalendar() {
   return (
     <>
       <CalendarContainer themeMode={theme}>
-        <Calendar value={activeDay} onClickDay={selectDay} />
+        <Calendar value={activeDay} onClickDay={selectDay} calendarType="US" />
       </CalendarContainer>
-      <EventList activeDay={activeDay} />
+      <EventList activeDay={activeDay} eventState={eventState} />
     </>
   );
 }

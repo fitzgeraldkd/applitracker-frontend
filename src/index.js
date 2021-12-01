@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { ThemeProvider as ThemeModeProvider } from './context/theme';
+import { ModalProvider } from './context/modal';
 
 // const palette = {
 //   lightest: '#F3EFFB',
@@ -105,7 +106,9 @@ ReactDOM.render(
     <BrowserRouter>
       <ThemeProvider theme={theme}>
         <ThemeModeProvider>
-          <App />
+          <ModalProvider>
+            <App />
+          </ModalProvider>
         </ThemeModeProvider>
       </ThemeProvider>
     </BrowserRouter>
