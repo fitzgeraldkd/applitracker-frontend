@@ -3,9 +3,15 @@ import styled from 'styled-components';
 
 import { ModalContext } from '../context/modal';
 
-import Button from './common/Button.tsx';
+import Button from './common/Button';
+import { EventRecordType, StateContainer } from '../shared/types';
 
-function EventList({ activeDay, eventState }) {
+interface EventListProps {
+  activeDay: Date,
+  eventState: StateContainer<EventRecordType>
+}
+
+function EventList({ activeDay, eventState }: EventListProps) {
   const { setModal } = useContext(ModalContext);
 
   const events = eventState.records

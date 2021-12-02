@@ -8,13 +8,16 @@ import Header from './Header';
 import Jobs from './Jobs';
 import UserForm from './UserForm';
 import EventCalendar from './EventCalendar';
+import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer, ValidRecordType } from '../shared/types';
 
 function App() {
   const { theme } = useContext(ThemeContext);
   const [userId, setUserId] = useState(localStorage.getItem('user_id'));
-  const [jobs, setJobs] = useState([]);
-  const [communications, setCommunications] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [jobs, setJobs] = useState([] as (JobRecordType & ValidRecordType)[]);
+  const [communications, setCommunications] = useState([] as (CommunicationRecordType & ValidRecordType)[]);
+  const [events, setEvents] = useState([] as (EventRecordType & ValidRecordType)[]);
+
+  type Setter<RecordType> = React.Dispatch<React.SetStateAction<(RecordType & ValidRecordType)[]>>;
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/jobs`)
@@ -36,28 +39,41 @@ function App() {
       });
   }, []);
 
-  const addRecord = (setter, newRecord) => {
+  const addRecord = <RecordType, >(setter: Setter<RecordType>, newRecord: RecordType & ValidRecordType) => {
     setter(currentRecords => [...currentRecords, newRecord]);
   };
 
-  const updateRecord = (setter, updatedRecord) => {
+  const updateRecord = <RecordType, >(setter: Setter<RecordType>, updatedRecord: RecordType & ValidRecordType) => {
     setter(currentRecords => currentRecords.map(oldRecord => (
       oldRecord.id === updatedRecord.id ? updatedRecord : oldRecord
     )));
   };
 
-  const deleteRecord = (setter, deletedRecord) => {
+  const deleteRecord = <RecordType, >(setter: Setter<RecordType>, deletedRecord: RecordType & ValidRecordType) => {
     setter(currentRecords => currentRecords.filter(record => record.id !== deletedRecord.id));
   };
 
-  function State(records, setter) {
-    this.records = records;
-    this.add = record => addRecord(setter, record);
-    this.update = record => updateRecord(setter, record);
-    this.delete = record => deleteRecord(setter, record);
-  };
+  // function State2<RecordType>(this: StateContainer<RecordType>, records: (RecordType & ValidRecordType)[], setter: React.Dispatch<React.SetStateAction<(RecordType & ValidRecordType)[]>>) {
+  //   this.records = records;
+  //   this.add = (record: RecordType & ValidRecordType) => addRecord(setter, record);
+  //   this.update = (record: RecordType & ValidRecordType) => updateRecord(setter, record);
+  //   this.delete = (record: RecordType & ValidRecordType) => deleteRecord(setter, record);
+  // };
 
-  const jobState = new State(jobs, setJobs);
+  class State<RecordType> {
+    records: (RecordType & ValidRecordType)[];
+    add: (record: RecordType & ValidRecordType) => void;
+    update: (record: RecordType & ValidRecordType) => void;
+    delete: (record: RecordType & ValidRecordType) => void;
+    constructor(records: (RecordType & ValidRecordType)[], setter: React.Dispatch<React.SetStateAction<(RecordType & ValidRecordType)[]>>) {
+      this.records = records;
+      this.add = (record: RecordType & ValidRecordType) => addRecord<RecordType>(setter, record)
+      this.update = (record: RecordType & ValidRecordType) => updateRecord<RecordType>(setter, record)
+      this.delete = (record: RecordType & ValidRecordType) => deleteRecord<RecordType>(setter, record)
+    }
+  }
+
+  const jobState = new State(jobs, setJobs) as StateContainer<JobRecordType>;
   const communicationState = new State(communications, setCommunications);
   const eventState = new State(events, setEvents);
 
@@ -73,7 +89,7 @@ function App() {
   //   add: (record)
   // };
 
-  const handleUserIdUpdate = (newUserId) => {
+  const handleUserIdUpdate = (newUserId: any) => {
     setUserId(newUserId);
   };
 
@@ -86,7 +102,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Jobs userId={userId} jobState={jobState} />} />
             <Route path="login" element={<UserForm userId={userId} handleUserIdUpdate={handleUserIdUpdate} />} />
-            <Route path='calendar' element={<EventCalendar userId={userId} eventState={eventState} />} />
+            <Route path='calendar' element={<EventCalendar eventState={eventState} />} />
           </Routes>
         </Body>
       </AppContainer>
@@ -96,7 +112,7 @@ function App() {
 
 export default App;
 
-const Document = styled.div`
+const Document = styled.div<{themeMode: ('light' | 'dark')}>`
   position: absolute;
   left: 0;
   top: 0;
@@ -112,7 +128,7 @@ const Document = styled.div`
 
 `;
 
-const AppContainer = styled.div`
+const AppContainer = styled.div<{themeMode: ('light' | 'dark')}>`
   max-width: 900px;
   margin: auto;
   margin-top: 10px;

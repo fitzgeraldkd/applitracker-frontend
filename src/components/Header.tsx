@@ -10,7 +10,12 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Link } from "react-router-dom";
 
-function Header({ userId, handleUserIdUpdate }) {
+interface HeaderProps {
+  userId: any,
+  handleUserIdUpdate: Function
+};
+
+function Header({ userId, handleUserIdUpdate }: HeaderProps) {
   const { theme, setTheme } = useContext(ThemeContext);
 
   const logout = () => {
@@ -50,7 +55,7 @@ function Header({ userId, handleUserIdUpdate }) {
 
 export default Header;
 
-const HeaderBar = styled.div`
+const HeaderBar = styled.div<{themeMode: 'light' | 'dark'}>`
   text-align: center;
   background-color: ${props => props.theme.colors[props.themeMode].header.background};
   color: ${props => props.theme.colors[props.themeMode].header.text};

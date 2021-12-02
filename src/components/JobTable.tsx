@@ -1,9 +1,14 @@
+import React from 'react';
 import styled from 'styled-components';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
-import React from 'react';
+import { JobRecordType } from '../shared/types';
 
-function JobTable({ jobs }) {
+interface JobTableProps {
+  jobs: JobRecordType[]
+};
+
+function JobTable({ jobs }: JobTableProps) {
 
 
   return (

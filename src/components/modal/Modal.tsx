@@ -2,9 +2,16 @@ import { useContext } from "react";
 import styled from 'styled-components';
 import { ModalContext } from '../../context/modal';
 import { ThemeContext } from "../../context/theme";
-import EventForm from './EventForm.tsx';
+import EventForm from './EventForm';
+import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer } from '../../shared/types';
 
-function Modal({ jobState, communicationState, eventState }) {
+interface ModalProps {
+  communicationState: StateContainer<CommunicationRecordType>,
+  eventState: StateContainer<EventRecordType>,
+  jobState: StateContainer<JobRecordType>
+};
+
+function Modal({ jobState, communicationState, eventState }: ModalProps) {
   const { modal, setModal } = useContext(ModalContext);
   const { theme } = useContext(ThemeContext);
   if (modal === undefined) return null;
@@ -28,7 +35,7 @@ const ModalBackground = styled.div`
   z-index: 1;
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{themeMode: 'light' | 'dark'}>`
   position: fixed;
   top: 50%;
   left: 50%;

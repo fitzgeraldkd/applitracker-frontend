@@ -7,7 +7,7 @@ import { EventRecordType, JobRecordType, StateContainer } from '../../shared/typ
 
 interface EventFormProps {
   eventState: StateContainer<EventRecordType>
-}
+};
 
 function EventForm({ eventState }: EventFormProps) {
   const [jobs, setJobs] = useState([] as JobRecordType[]);

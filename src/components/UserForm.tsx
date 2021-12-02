@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+// import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
 import Fieldset from "./form/Fieldset";
-import Input from './form/Input.tsx';
-import Button from './common/Button.tsx';
+import Input from './form/Input';
+import Button from './common/Button';
 
-function UserForm({ userId, handleUserIdUpdate }) {
+// TODO: these props will probably not be needed once auth added
+interface UserFormProps {
+ [key: string]: any
+};
+
+function UserForm({ userId, handleUserIdUpdate }: UserFormProps) {
   const [loginData, setLoginData] = useState({
     username: '',
     password: '',
     passwordConfirm: ''
   });
   const { status } = useAuth(userId);
-  const [message, setMessage] = useState();
+  const [message, setMessage] = useState('');
   const [newUser, setNewUser] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
   const navigate = useNavigate();
@@ -26,13 +31,13 @@ function UserForm({ userId, handleUserIdUpdate }) {
     setLoginData({username: '', password: '', passwordConfirm: ''})
   };
 
-  const setLoggedInUser = (data) => {
+  const setLoggedInUser = (data: any) => {
     localStorage.setItem('login_token', data.login_token);
     localStorage.setItem('user_id', data.user_id);
     handleUserIdUpdate(data.user_id);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const options = {
       method: 'POST',
@@ -59,14 +64,14 @@ function UserForm({ userId, handleUserIdUpdate }) {
   };
 
 
-  const handleFormChange = (e) => {
+  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginData(currentLoginData => Object.assign({...currentLoginData, [e.target.name]: e.target.value}))
   };
 
   return (
     <>
       <form onSubmit={handleFormSubmit}>
-        <Fieldset columns={2} disabled={disableForm}>
+        <Fieldset fieldsetProps={{disabled: disableForm}}>
           <Input label='Username:' inputProps={{name: 'username', value: loginData.username, onChange: handleFormChange}} />
           <Input label='Password:' inputProps={{type: 'password', name: 'password', value: loginData.password, onChange: handleFormChange}} />
           {newUser && <Input label='Confirm:' inputProps={{type: 'password', name: 'passwordConfirm', value: loginData.passwordConfirm, onChange: handleFormChange}} />}
@@ -74,7 +79,8 @@ function UserForm({ userId, handleUserIdUpdate }) {
           <Button buttonProps={{type: 'submit'}}>Submit</Button>
         </Fieldset>
       </form>
-      {newUser ? <Button onClick={() => setNewUser(false)}>Have an account?</Button> : <Button onClick={() => setNewUser(true)}>Need an account?</Button>}
+      <span>{message}</span>
+      {newUser ? <Button buttonProps={{onClick:() => setNewUser(false)}}>Have an account?</Button> : <Button buttonProps={{onClick:() => setNewUser(true)}}>Need an account?</Button>}
     </>
   );
 }

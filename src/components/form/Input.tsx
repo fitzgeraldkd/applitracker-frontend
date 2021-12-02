@@ -12,7 +12,7 @@ interface InputProps {
 };
 
 function Input( { label, inputProps }: InputProps ) {
-  const { theme, setTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   // const { label, ...inputProps } = props;
   // if (!id) id = name;

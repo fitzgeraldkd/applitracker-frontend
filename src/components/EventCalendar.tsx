@@ -3,12 +3,17 @@ import styled from 'styled-components';
 import { useContext, useState } from 'react';
 import { ThemeContext } from "../context/theme";
 import EventList from './EventList';
+import { EventRecordType, StateContainer } from '../shared/types';
 
-function EventCalendar({ eventState }) {
+interface EventCalendarProps {
+  eventState: StateContainer<EventRecordType>
+};
+
+function EventCalendar({ eventState }: EventCalendarProps) {
   const { theme } = useContext(ThemeContext);
   const [activeDay, setActiveDay] = useState(new Date());
 
-  const selectDay = (newDay) => {
+  const selectDay = (newDay: Date) => {
     setActiveDay(newDay);
   };
 
@@ -24,7 +29,7 @@ function EventCalendar({ eventState }) {
 
 export default EventCalendar;
 
-const CalendarContainer = styled.div`
+const CalendarContainer = styled.div<{themeMode: 'light' | 'dark'}>`
   max-width: 350px;
   margin: auto;
 

@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
 import JobTable from './JobTable';
+import { JobRecordType, StateContainer } from '../shared/types';
 
-function Body({ userId, jobState }) {
+// TODO: userId probably not needed
+interface BodyProps {
+  userId: any,
+  jobState: StateContainer<JobRecordType>
+};
+
+function Body({ userId, jobState }: BodyProps) {
   const { status } = useAuth(userId);
   // const [jobs, setJobs] = useState([]);
   const navigate = useNavigate();

@@ -5,6 +5,14 @@ export type StateContainer<RecordType> = {
   delete: Function
 };
 
+export type ValidRecordType = {
+  id: number
+};
+
+export type CommunicationRecordType = {
+  id?: number
+};
+
 export type EventRecordType = {
   id?: number,
   title: string,
