@@ -2,7 +2,7 @@ import { useContext } from "react";
 import styled from 'styled-components';
 import { ModalContext } from '../../context/modal';
 import { ThemeContext } from "../../context/theme";
-import EventForm from './EventForm';
+import EventForm from './EventForm.tsx';
 
 function Modal({ jobState, communicationState, eventState }) {
   const { modal, setModal } = useContext(ModalContext);

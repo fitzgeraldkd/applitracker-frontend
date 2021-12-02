@@ -2,9 +2,18 @@ import { useContext } from 'react';
 import styled from "styled-components";
 import { ThemeContext } from '../../context/theme';
 
-function Select( props ) {
-  const { children, label, ...selectProps } = props;
-  const { theme, setTheme } = useContext(ThemeContext);
+interface SelectProps {
+  children: React.ReactNode,
+  label: string,
+  selectProps: {
+    name: string,
+    [prop: string]: any
+  }
+};
+
+function Select( { children, label, selectProps }: SelectProps ) {
+  // const { children, label, selectProps } = props;
+  const { theme } = useContext(ThemeContext);
 
   if (!selectProps.id) selectProps.id = selectProps.name;
 
@@ -20,7 +29,7 @@ function Select( props ) {
 
 export default Select;
 
-const SelectField = styled.select`
+const SelectField = styled.select<{ themeMode: 'light' | 'dark' }>`
 
   border-radius: 3px;
   border-color: ${props => props.theme.colors[props.themeMode].input.border};

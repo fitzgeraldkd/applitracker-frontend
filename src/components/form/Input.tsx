@@ -3,10 +3,18 @@ import { useContext } from "react";
 import { ThemeContext } from '../../context/theme';
 
 // function Input({ type='text', name, id, onChange, label }) {
-function Input( props ) {
+
+interface InputProps {
+  label: string,
+  inputProps: {
+    [prop: string]: any
+  }
+};
+
+function Input( { label, inputProps }: InputProps ) {
   const { theme, setTheme } = useContext(ThemeContext);
 
-  const { label, ...inputProps } = props;
+  // const { label, ...inputProps } = props;
   // if (!id) id = name;
   if (!inputProps.id) inputProps.id = inputProps.name;
   return (
@@ -19,7 +27,7 @@ function Input( props ) {
 
 export default Input;
 
-const InputField = styled.input`
+const InputField = styled.input<InputProps['inputProps']>`
 
   border-radius: 3px;
   border-color: ${props => props.theme.colors[props.themeMode].input.border};

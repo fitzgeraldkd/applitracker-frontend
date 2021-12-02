@@ -2,8 +2,15 @@ import styled from "styled-components";
 import { useContext } from "react";
 import { ThemeContext } from '../../context/theme';
 
-function Button({ children, ...buttonProps }) {
-  const { theme, setTheme } = useContext(ThemeContext);
+interface ButtonProps {
+  children: React.ReactNode,
+  buttonProps: {
+    [prop: string]: any
+  }
+}
+
+function Button({ children, buttonProps }: ButtonProps) {
+  const { theme } = useContext(ThemeContext);
   return (
     <ButtonComp themeMode={theme} {...buttonProps}>
       {children}
@@ -13,7 +20,7 @@ function Button({ children, ...buttonProps }) {
 
 export default Button;
 
-const ButtonComp = styled.button`
+const ButtonComp = styled.button<ButtonProps['buttonProps']>`
   background-color: ${props => props.theme.colors[props.themeMode].button.background};
   color: ${props => props.theme.colors[props.themeMode].button.text};
   border-color: ${props => props.theme.colors[props.themeMode].button.border};

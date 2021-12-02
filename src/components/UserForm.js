@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import useAuth from '../hooks/useAuth';
 import Fieldset from "./form/Fieldset";
-import Input from './form/Input';
-import Button from './common/Button';
+import Input from './form/Input.tsx';
+import Button from './common/Button.tsx';
 
 function UserForm({ userId, handleUserIdUpdate }) {
   const [loginData, setLoginData] = useState({
@@ -67,11 +67,11 @@ function UserForm({ userId, handleUserIdUpdate }) {
     <>
       <form onSubmit={handleFormSubmit}>
         <Fieldset columns={2} disabled={disableForm}>
-          <Input name='username' label='Username:' value={loginData.username} onChange={handleFormChange} />
-          <Input type='password' name='password' label='Password:' value={loginData.password} onChange={handleFormChange} />
-          {newUser && <Input type='password' name='passwordConfirm' label='Confirm:' value={loginData.passwordConfirm} onChange={handleFormChange} />}
+          <Input label='Username:' inputProps={{name: 'username', value: loginData.username, onChange: handleFormChange}} />
+          <Input label='Password:' inputProps={{type: 'password', name: 'password', value: loginData.password, onChange: handleFormChange}} />
+          {newUser && <Input label='Confirm:' inputProps={{type: 'password', name: 'passwordConfirm', value: loginData.passwordConfirm, onChange: handleFormChange}} />}
           <span></span>
-          <Button type='submit'>Submit</Button>
+          <Button buttonProps={{type: 'submit'}}>Submit</Button>
         </Fieldset>
       </form>
       {newUser ? <Button onClick={() => setNewUser(false)}>Have an account?</Button> : <Button onClick={() => setNewUser(true)}>Need an account?</Button>}

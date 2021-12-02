@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { ModalContext } from '../context/modal';
 
-import Button from './common/Button';
+import Button from './common/Button.tsx';
 
 function EventList({ activeDay, eventState }) {
   const { setModal } = useContext(ModalContext);
@@ -23,7 +23,7 @@ function EventList({ activeDay, eventState }) {
     <EventListGrid>
       <span className='header'>
         Events for: {activeDay.toLocaleDateString()}
-        <Button onClick={() => setModal('event')}>Add Event</Button>
+        <Button buttonProps={{onClick: () => setModal('event')}}>Add Event</Button>
       </span>
       <span>Time</span>
       <span>Event</span>
