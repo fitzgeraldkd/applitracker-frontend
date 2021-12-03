@@ -11,58 +11,96 @@ interface UserFormProps {
  [key: string]: any
 };
 
-function UserForm({ userId, handleUserIdUpdate }: UserFormProps) {
+function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
   const [loginData, setLoginData] = useState({
     username: '',
     password: '',
     passwordConfirm: ''
   });
-  const { status } = useAuth(userId);
+  // const { status } = useAuth(userId);
   const [message, setMessage] = useState('');
   const [newUser, setNewUser] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (status === 'success') navigate('/');
-  }, [status, navigate]);
+  // useEffect(() => {
+  //   if (status === 'success') navigate('/');
+  // }, [status, navigate]);
 
-  const resetLoginData = () => {
-    setLoginData({username: '', password: '', passwordConfirm: ''})
-  };
+  // const resetLoginData = () => {
+  //   setLoginData({username: '', password: '', passwordConfirm: ''})
+  // };
 
   const setLoggedInUser = (data: any) => {
-    localStorage.setItem('login_token', data.login_token);
-    localStorage.setItem('user_id', data.user_id);
-    handleUserIdUpdate(data.user_id);
+    // localStorage.setItem('login_token', data.login_token);
+    // localStorage.setItem('user_id', data.user_id);
+    // handleUserIdUpdate(data.user_id);
+    // document.cookie = `jwt=${encodeURIComponent(data.jwt)};secure=true`
+    handleUsernameUpdate(data.user.username);
+    localStorage.setItem('jwt', data.jwt);
+    navigate('/');
   };
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleUserLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const options = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(loginData)
+      body: JSON.stringify({
+        username: loginData.username,
+        password: loginData.password
+      })
     };
     setDisableForm(true);
-    fetch('http://localhost:9292/users/login', options)
-      .then(resp => resp.json())
+    fetch(`${process.env.REACT_APP_API_URL}/login`, options)
+      .then(resp => {
+        if (!resp.ok) throw resp;
+        return resp.json()
+      })
       .then(data => {
-        console.log(data);
-        if (data.success) {
-          resetLoginData();
-          setMessage('Successfully logged in!');
-          setLoggedInUser(data);
-          // navigate('/');
-        } else {
-          setMessage('Invalid login credentials.');
-          setDisableForm(false);
-        }
+        setLoggedInUser(data);
+        // if (data.success) {
+        //   resetLoginData();
+        //   setMessage('Successfully logged in!');
+        //   setLoggedInUser(data);
+        //   // navigate('/');
+        // } else {
+        //   setMessage('Invalid login credentials.');
+        //   setDisableForm(false);
+        // }
+      }).catch(error => {
+        console.log(error);
+        setDisableForm(false);
       });
   };
 
+  const handleUserCreate = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: loginData.username,
+        password: loginData.password,
+        password_confirmation: loginData.passwordConfirm
+      })
+    };
+    setDisableForm(true);
+    fetch(`${process.env.REACT_APP_API_URL}/users`, options)
+      .then(resp => {
+        if (!resp.ok) throw resp;
+        return resp.json();
+      }).then(data => {
+        setLoggedInUser(data);
+      }).catch(error => {
+        console.log(error);
+        setDisableForm(false);
+      });
+  };
 
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginData(currentLoginData => Object.assign({...currentLoginData, [e.target.name]: e.target.value}))
@@ -70,7 +108,7 @@ function UserForm({ userId, handleUserIdUpdate }: UserFormProps) {
 
   return (
     <>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={newUser ? handleUserCreate : handleUserLogin}>
         <Fieldset fieldsetProps={{disabled: disableForm}}>
           <Input label='Username:' inputProps={{name: 'username', value: loginData.username, onChange: handleFormChange}} />
           <Input label='Password:' inputProps={{type: 'password', name: 'password', value: loginData.password, onChange: handleFormChange}} />

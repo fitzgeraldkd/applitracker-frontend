@@ -12,7 +12,7 @@ import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer
 
 function App() {
   const { theme } = useContext(ThemeContext);
-  const [userId, setUserId] = useState(localStorage.getItem('user_id'));
+  const [username, setUsername] = useState<string>();
   const [jobs, setJobs] = useState([] as (JobRecordType & ValidRecordType)[]);
   const [communications, setCommunications] = useState([] as (CommunicationRecordType & ValidRecordType)[]);
   const [events, setEvents] = useState([] as (EventRecordType & ValidRecordType)[]);
@@ -20,24 +20,67 @@ function App() {
   type Setter<RecordType> = React.Dispatch<React.SetStateAction<(RecordType & ValidRecordType)[]>>;
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/jobs`)
-      .then(resp => resp.json())
-      .then(data => {
-        setJobs(data);
-      });
+    if (localStorage.getItem('jwt') !== null) {
+      const options = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+      };
+  
+      fetch(`${process.env.REACT_APP_API_URL}/me`, options)
+        .then(resp => {
+          if (!resp.ok) throw resp;
+          return resp.json();
+        }).then(data => {
+          console.log(data);
+          setUsername(data.username);
+        });
+    }
+  }, [])
 
-    fetch(`${process.env.REACT_APP_API_URL}/communications`)
-      .then(resp => resp.json())
-      .then(data => {
-        setCommunications(data);
-      });
-
-    fetch(`${process.env.REACT_APP_API_URL}/events`)
-      .then(resp => resp.json())
-      .then(data => {
-        setEvents(data);
-      });
-  }, []);
+  useEffect(() => {
+    if (localStorage.getItem('jwt') !== null) {
+      const options = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`
+        }
+      };
+  
+      fetch(`${process.env.REACT_APP_API_URL}/jobs`, options)
+        .then(resp => {
+          if (!resp.ok) throw resp;
+          return resp.json();
+        })
+        .then(data => {
+          setJobs(data);
+        }).catch(error => {
+          console.log(error);
+          // TODO: wait for json to render
+        });
+  
+      fetch(`${process.env.REACT_APP_API_URL}/communications`, options)
+        .then(resp => {
+          if (!resp.ok) throw resp;
+          return resp.json();
+        })
+        .then(data => {
+          setCommunications(data);
+        }).catch(error => {
+          console.log(error);
+        });
+  
+      fetch(`${process.env.REACT_APP_API_URL}/events`, options)
+        .then(resp => {
+          if (!resp.ok) throw resp;
+          return resp.json();
+        })
+        .then(data => {
+          setEvents(data);
+        }).catch(error => {
+          console.log(error);
+        });
+    }
+  }, [username]);
 
   const addRecord = <RecordType, >(setter: Setter<RecordType>, newRecord: RecordType & ValidRecordType) => {
     setter(currentRecords => [...currentRecords, newRecord]);
@@ -53,13 +96,6 @@ function App() {
     setter(currentRecords => currentRecords.filter(record => record.id !== deletedRecord.id));
   };
 
-  // function State2<RecordType>(this: StateContainer<RecordType>, records: (RecordType & ValidRecordType)[], setter: React.Dispatch<React.SetStateAction<(RecordType & ValidRecordType)[]>>) {
-  //   this.records = records;
-  //   this.add = (record: RecordType & ValidRecordType) => addRecord(setter, record);
-  //   this.update = (record: RecordType & ValidRecordType) => updateRecord(setter, record);
-  //   this.delete = (record: RecordType & ValidRecordType) => deleteRecord(setter, record);
-  // };
-
   class State<RecordType> {
     records: (RecordType & ValidRecordType)[];
     add: (record: RecordType & ValidRecordType) => void;
@@ -67,42 +103,30 @@ function App() {
     delete: (record: RecordType & ValidRecordType) => void;
     constructor(records: (RecordType & ValidRecordType)[], setter: React.Dispatch<React.SetStateAction<(RecordType & ValidRecordType)[]>>) {
       this.records = records;
-      this.add = (record: RecordType & ValidRecordType) => addRecord<RecordType>(setter, record)
+      this.add = record => addRecord<RecordType>(setter, record)
       this.update = (record: RecordType & ValidRecordType) => updateRecord<RecordType>(setter, record)
       this.delete = (record: RecordType & ValidRecordType) => deleteRecord<RecordType>(setter, record)
     }
   }
 
   const jobState = new State(jobs, setJobs) as StateContainer<JobRecordType>;
-  const communicationState = new State(communications, setCommunications);
-  const eventState = new State(events, setEvents);
+  const communicationState = new State(communications, setCommunications) as StateContainer<CommunicationRecordType>;
+  const eventState = new State(events, setEvents) as StateContainer<EventRecordType>;
 
-  // const jobState = {
-  //   records: jobs,
-  //   add: (record) => addRecord(setJobs, record),
-  //   update: (record) => updateRecord(setJobs, record),
-  //   delete: (record) => deleteRecord(setJobs, record)
-  // };
-
-  // const eventState = {
-  //   records: events,
-  //   add: (record)
-  // };
-
-  const handleUserIdUpdate = (newUserId: any) => {
-    setUserId(newUserId);
+  const handleUsernameUpdate = (newUsername: string) => {
+    setUsername(newUsername);
   };
 
   return (
     <Document themeMode={theme}>
       <Modal jobState={jobState} communicationState={communicationState} eventState={eventState} />
       <AppContainer themeMode={theme}>
-        <Header userId={userId} handleUserIdUpdate={handleUserIdUpdate} />
+        <Header username={username} handleUsernameUpdate={handleUsernameUpdate} />
         <Body>
           <Routes>
-            <Route path="/" element={<Jobs userId={userId} jobState={jobState} />} />
-            <Route path="login" element={<UserForm userId={userId} handleUserIdUpdate={handleUserIdUpdate} />} />
-            <Route path='calendar' element={<EventCalendar eventState={eventState} />} />
+            <Route path="/" element={<Jobs jobState={jobState} username={username} />} />
+            <Route path="login" element={<UserForm username={username} handleUsernameUpdate={handleUsernameUpdate} />} />
+            <Route path='calendar' element={<EventCalendar eventState={eventState} jobState={jobState} />} />
           </Routes>
         </Body>
       </AppContainer>

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ModalContext } from '../../context/modal';
 import { ThemeContext } from "../../context/theme";
 import EventForm from './EventForm';
+import JobForm from './JobForm';
 import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer } from '../../shared/types';
 
 interface ModalProps {
@@ -19,7 +20,8 @@ function Modal({ jobState, communicationState, eventState }: ModalProps) {
     <>
       <ModalBackground onClick={() => setModal()} />
       <ModalContent themeMode={theme}>
-        {modal === 'event' && <EventForm eventState={eventState} />}
+        {modal.modal === 'event' && <EventForm eventState={eventState} jobState={jobState} event={modal.record} options={modal.options} />}
+        {modal.modal === 'job' && <JobForm jobState={jobState} job={modal.record} />}
       </ModalContent>
     </>
   );

@@ -9,7 +9,6 @@ interface FieldsetProps {
 };
 
 function Fieldset({ children, fieldsetProps={} }: FieldsetProps) {
-  console.log(fieldsetProps);
   return (
     <FormFieldset {...fieldsetProps}>
       {children}

@@ -1,5 +1,5 @@
 export type StateContainer<RecordType> = {
-  records: RecordType[],
+  records: (RecordType & ValidRecordType)[],
   add: Function,
   update: Function,
   delete: Function
@@ -18,7 +18,6 @@ export type EventRecordType = {
   title: string,
   description: string,
   date: string | Date,
-  status: string,
   job_id: number
 };
 

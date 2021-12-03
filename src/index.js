@@ -47,6 +47,11 @@ const theme = {
         text: palette.lightest,
         border: palette.darkest
       },
+      link: {
+        text: palette.light,
+        textHover: palette.lighter,
+        backgroundHover: palette.darkest
+      },
       button: {
         background: palette.dark,
         text: palette.lightest,
@@ -81,6 +86,11 @@ const theme = {
         background: palette.light,
         text: palette.darkest,
         border: palette.lightest
+      },
+      link: {
+        text: palette.dark,
+        textHover: palette.darker,
+        backgroundHover: palette.lightest
       },
       button: {
         background: palette.light,

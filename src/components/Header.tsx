@@ -9,24 +9,25 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Link } from "react-router-dom";
+import { logout } from '../shared/utils';
 
 interface HeaderProps {
-  userId: any,
-  handleUserIdUpdate: Function
+  username: string | undefined,
+  handleUsernameUpdate: Function
 };
 
-function Header({ userId, handleUserIdUpdate }: HeaderProps) {
+function Header({ username, handleUsernameUpdate }: HeaderProps) {
   const { theme, setTheme } = useContext(ThemeContext);
 
-  const logout = () => {
-    fetch(`${process.env.REACT_APP_API_URL}/users/${userId}/logout`)
-      .then(resp => resp.json())
-      .then(data => {
-        localStorage.removeItem('login_token');
-        localStorage.removeItem('user_id');
-        handleUserIdUpdate(null);
-      })
-  };
+  // const logout = () => {
+  //   fetch(`${process.env.REACT_APP_API_URL}/users/${userId}/logout`)
+  //     .then(resp => resp.json())
+  //     .then(data => {
+  //       localStorage.removeItem('login_token');
+  //       localStorage.removeItem('user_id');
+  //       handleUserIdUpdate(null);
+  //     })
+  // };
 
   return (
     <HeaderBar themeMode={theme}>
@@ -44,10 +45,9 @@ function Header({ userId, handleUserIdUpdate }: HeaderProps) {
       <h1>AppliTracker</h1>
       </Link>
       <span className='right-icons'>
-        <Link to='/login'>
-          <LoginIcon />
-        </Link>
-        <LogoutIcon onClick={logout} />
+        { username === undefined ? <Link to='/login'><LoginIcon /></Link> : <Link to='/'><LogoutIcon onClick={() => logout(handleUsernameUpdate)} /></Link> }
+        {/* <Link to='/login'><LoginIcon /></Link>
+        <Link to='/login'><LogoutIcon onClick={logout} /></Link> */}
       </span>
     </HeaderBar>
   )

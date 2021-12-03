@@ -1,15 +1,16 @@
-import Calendar from 'react-calendar';
+import Calendar, { CalendarTileProperties } from 'react-calendar';
 import styled from 'styled-components';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { ThemeContext } from "../context/theme";
 import EventList from './EventList';
-import { EventRecordType, StateContainer } from '../shared/types';
+import { EventRecordType, JobRecordType, StateContainer } from '../shared/types';
 
 interface EventCalendarProps {
-  eventState: StateContainer<EventRecordType>
+  eventState: StateContainer<EventRecordType>,
+  jobState: StateContainer<JobRecordType>
 };
 
-function EventCalendar({ eventState }: EventCalendarProps) {
+function EventCalendar({ eventState, jobState }: EventCalendarProps) {
   const { theme } = useContext(ThemeContext);
   const [activeDay, setActiveDay] = useState(new Date());
 
@@ -17,12 +18,25 @@ function EventCalendar({ eventState }: EventCalendarProps) {
     setActiveDay(newDay);
   };
 
+  const eventDates = useCallback(() => {
+    return eventState.records.map(event => event.date)
+  }, [eventState]);
+
+  const tileClassName = ({ date, view }: CalendarTileProperties) => {
+    if (view === 'month') {
+      if (eventDates().find(dDate => (
+        new Date(dDate).toDateString() === date.toDateString()
+      ))) return 'event-date';
+    }
+    return null;
+  };
+
   return (
     <>
       <CalendarContainer themeMode={theme}>
-        <Calendar value={activeDay} onClickDay={selectDay} calendarType="US" />
+        <Calendar value={activeDay} onClickDay={selectDay} calendarType="US" tileClassName={tileClassName} />
       </CalendarContainer>
-      <EventList activeDay={activeDay} eventState={eventState} />
+      <EventList activeDay={activeDay} eventState={eventState} jobState={jobState} />
     </>
   );
 }
@@ -57,6 +71,12 @@ const CalendarContainer = styled.div<{themeMode: 'light' | 'dark'}>`
         border-color: ${props => props.theme.colors[props.themeMode].button.active.border};
       }
     }
+
+    .event-date {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
     .react-calendar__navigation {
       /* display: flex;
       justify-content: space-evenly; */
