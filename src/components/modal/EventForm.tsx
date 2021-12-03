@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import { ModalContext } from '../../context/modal';
 import Fieldset from "../form/Fieldset";
 import Input from '../form/Input';
@@ -17,7 +17,7 @@ interface EventFormProps {
 };
 
 function EventForm({ eventState, jobState, event, options }: EventFormProps) {
-  console.log(options);
+
   const getDateValue = (date: Date) => {
     return [
       date.getFullYear(), 
@@ -31,8 +31,7 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   }
-  // const [jobs, setJobs] = useState([] as JobRecordType[]);
-  if (event) console.log(new Date(event.date).getDate());
+  
   const [eventData, setEventData] = useState({
     title: event ? event.title : '',
     description: event ? event.description : '',
@@ -43,25 +42,16 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
   
   const { setModal } = useContext(ModalContext);
 
-  // useEffect(() => {
-  //   fetch(`${process.env.REACT_APP_API_URL}/jobs`)
-  //     .then(resp => resp.json())
-  //     .then(data => {
-  //       setJobs(data);
-  //     });
-  // }, []);
-
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const newEvent: EventRecordType = {
-      // ...eventData,
       title: eventData.title,
       description: eventData.description,
       date: new Date(eventData.date + ' ' + eventData.time),
       job_id: parseInt(eventData.jobId, 10)
     };
-    // delete newEvent.time;
-    console.log(newEvent)
+
     const options = {
       method: event ? 'PATCH' : 'POST',
       headers: {
@@ -70,7 +60,9 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
       },
       body: JSON.stringify(newEvent)
     };
+
     const endpoint = event ? `/${event.id}` : '';
+    
     fetch(`${process.env.REACT_APP_API_URL}/events${endpoint}`, options)
       .then(resp => {
         if (!resp.ok) throw resp;

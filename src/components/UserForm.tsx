@@ -1,7 +1,5 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-// import styled from "styled-components";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuth from '../hooks/useAuth';
 import Fieldset from "./form/Fieldset";
 import Input from './form/Input';
 import Button from './common/Button';
@@ -17,25 +15,13 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
     password: '',
     passwordConfirm: ''
   });
-  // const { status } = useAuth(userId);
-  const [message, setMessage] = useState('');
+
+  const [message] = useState('');
   const [newUser, setNewUser] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (status === 'success') navigate('/');
-  // }, [status, navigate]);
-
-  // const resetLoginData = () => {
-  //   setLoginData({username: '', password: '', passwordConfirm: ''})
-  // };
-
   const setLoggedInUser = (data: any) => {
-    // localStorage.setItem('login_token', data.login_token);
-    // localStorage.setItem('user_id', data.user_id);
-    // handleUserIdUpdate(data.user_id);
-    // document.cookie = `jwt=${encodeURIComponent(data.jwt)};secure=true`
     handleUsernameUpdate(data.user.username);
     localStorage.setItem('jwt', data.jwt);
     navigate('/');
@@ -43,6 +29,7 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
 
   const handleUserLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const options = {
       method: 'POST',
       headers: {
@@ -53,7 +40,9 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
         password: loginData.password
       })
     };
+
     setDisableForm(true);
+
     fetch(`${process.env.REACT_APP_API_URL}/login`, options)
       .then(resp => {
         if (!resp.ok) throw resp;
@@ -61,15 +50,6 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
       })
       .then(data => {
         setLoggedInUser(data);
-        // if (data.success) {
-        //   resetLoginData();
-        //   setMessage('Successfully logged in!');
-        //   setLoggedInUser(data);
-        //   // navigate('/');
-        // } else {
-        //   setMessage('Invalid login credentials.');
-        //   setDisableForm(false);
-        // }
       }).catch(error => {
         console.log(error);
         setDisableForm(false);
@@ -78,6 +58,7 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
 
   const handleUserCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const options = {
       method: 'POST',
       headers: {
@@ -89,7 +70,9 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
         password_confirmation: loginData.passwordConfirm
       })
     };
+
     setDisableForm(true);
+
     fetch(`${process.env.REACT_APP_API_URL}/users`, options)
       .then(resp => {
         if (!resp.ok) throw resp;

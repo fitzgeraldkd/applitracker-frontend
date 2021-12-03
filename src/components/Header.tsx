@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import GridViewIcon from '@mui/icons-material/GridView';
+// import GridViewIcon from '@mui/icons-material/GridView';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -19,16 +19,6 @@ interface HeaderProps {
 
 function Header({ username, handleUsernameUpdate }: HeaderProps) {
   const { theme, setTheme } = useContext(ThemeContext);
-
-  // const logout = () => {
-  //   fetch(`${process.env.REACT_APP_API_URL}/users/${userId}/logout`)
-  //     .then(resp => resp.json())
-  //     .then(data => {
-  //       localStorage.removeItem('login_token');
-  //       localStorage.removeItem('user_id');
-  //       handleUserIdUpdate(null);
-  //     })
-  // };
 
   return (
     <HeaderBar themeMode={theme}>
@@ -56,8 +46,6 @@ function Header({ username, handleUsernameUpdate }: HeaderProps) {
         <IconLink tooltip={{position: 'bottom', text: username ? 'Logout' : 'Login'}}>
           { username === undefined ? <Link to='/login'><LoginIcon /></Link> : <LogoutIcon onClick={() => logout(handleUsernameUpdate)} /> }
         </IconLink>
-        {/* <Link to='/login'><LoginIcon /></Link>
-        <Link to='/login'><LogoutIcon onClick={logout} /></Link> */}
       </span>
     </HeaderBar>
   )
