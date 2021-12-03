@@ -19,11 +19,16 @@ function EventList({ activeDay, eventState, jobState }: EventListProps) {
 
   const events = eventState.records
     .filter(event => new Date(event.date).toDateString() === activeDay.toDateString())
+    .sort((a, b) => {
+      if (a.date > b.date) return 1;
+      if (a.date < b.date) return -1;
+      return 0
+    })
     .map(event => {
       const job = jobState.records.find(job => job.id === event.job_id)
       return (
         <React.Fragment key={event.id}>
-          <span><IconLink iconLinkProps={{onClick: () => setModal({modal: 'event', record: event})}}><EditIcon /></IconLink></span>
+          <span><IconLink tooltip={{position: 'right', text: 'Edit'}} iconLinkProps={{onClick: () => setModal({modal: 'event', record: event})}}><EditIcon /></IconLink></span>
           <span>{new Date(event.date).toLocaleTimeString().replace(/:\d\d /, ' ')}</span>
           <span>{event.title}</span>
           <span>{job && job.company}</span>

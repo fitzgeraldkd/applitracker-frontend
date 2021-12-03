@@ -10,6 +10,7 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { Link } from "react-router-dom";
 import { logout } from '../shared/utils';
+import IconLink from './common/IconLink';
 
 interface HeaderProps {
   username: string | undefined,
@@ -32,20 +33,29 @@ function Header({ username, handleUsernameUpdate }: HeaderProps) {
   return (
     <HeaderBar themeMode={theme}>
       <span className='left-icons'>
-        <GridViewIcon />
-        <ListAltIcon />
-        <Link to='/calendar'>
-          <CalendarTodayIcon />
+        {/* <GridViewIcon /> */}
+        <Link to='/'>
+          <IconLink tooltip={{position: 'bottom', text: 'Jobs'}}>
+            <ListAltIcon />
+          </IconLink>
         </Link>
-        { theme === 'dark' ? <LightModeIcon onClick={() => setTheme('light')} /> : <DarkModeIcon onClick={() => setTheme('dark')} /> }
-        
+        <Link to='/calendar'>
+          <IconLink tooltip={{position: 'bottom', text: 'Events'}}>
+            <CalendarTodayIcon />
+          </IconLink>
+        </Link>
+        <IconLink tooltip={{position: 'bottom', text: theme === 'dark' ? 'Light Mode' : 'Dark Mode'}}>
+          { theme === 'dark' ? <LightModeIcon onClick={() => setTheme('light')} /> : <DarkModeIcon onClick={() => setTheme('dark')} /> }
+        </IconLink>
         
       </span>
       <Link to='/'>
       <h1>AppliTracker</h1>
       </Link>
       <span className='right-icons'>
-        { username === undefined ? <Link to='/login'><LoginIcon /></Link> : <Link to='/'><LogoutIcon onClick={() => logout(handleUsernameUpdate)} /></Link> }
+        <IconLink tooltip={{position: 'bottom', text: username ? 'Logout' : 'Login'}}>
+          { username === undefined ? <Link to='/login'><LoginIcon /></Link> : <LogoutIcon onClick={() => logout(handleUsernameUpdate)} /> }
+        </IconLink>
         {/* <Link to='/login'><LoginIcon /></Link>
         <Link to='/login'><LogoutIcon onClick={logout} /></Link> */}
       </span>

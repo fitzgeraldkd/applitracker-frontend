@@ -58,7 +58,7 @@ function JobForm({ jobState, job }: JobFormProps) {
   
   return (
     <form onSubmit={handleFormSubmit}>
-      Add a Job
+      {job ? "Edit Job" : "Add a Job" }
       <Fieldset fieldsetProps={{}}>
         <Input label='Company:' inputProps={{name: 'company', value: jobData.company, onChange: handleFormChange}} />
         <Input label='Position:' inputProps={{name: 'position', value: jobData.position, onChange: handleFormChange}} />

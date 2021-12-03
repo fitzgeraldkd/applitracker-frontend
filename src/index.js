@@ -66,6 +66,10 @@ const theme = {
           text: palette.lightest,
           border: palette.darkest
         }
+      },
+      tooltip: {
+        background: palette.light,
+        text: palette.darkest
       }
     },
     light: {
@@ -106,6 +110,10 @@ const theme = {
           text: palette.darkest,
           border: palette.lightest
         }
+      },
+      tooltip: {
+        background: palette.dark,
+        text: palette.lightest
       }
     }
   }

@@ -114,7 +114,7 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
           <Input label='Password:' inputProps={{type: 'password', name: 'password', value: loginData.password, onChange: handleFormChange}} />
           {newUser && <Input label='Confirm:' inputProps={{type: 'password', name: 'passwordConfirm', value: loginData.passwordConfirm, onChange: handleFormChange}} />}
           <span></span>
-          <Button buttonProps={{type: 'submit'}}>Submit</Button>
+          <Button buttonProps={{type: 'submit'}}>{newUser ? 'Create Account' : 'Log In'}</Button>
         </Fieldset>
       </form>
       <span>{message}</span>

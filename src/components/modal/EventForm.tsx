@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
+import { ModalContext } from '../../context/modal';
 import Fieldset from "../form/Fieldset";
 import Input from '../form/Input';
 import Select from '../form/Select';
@@ -39,6 +40,8 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
     time: event ? getTimeValue(new Date(event.date)) : "12:00",
     jobId: event ? event.job_id.toString() : ''
   });
+  
+  const { setModal } = useContext(ModalContext);
 
   // useEffect(() => {
   //   fetch(`${process.env.REACT_APP_API_URL}/jobs`)
@@ -60,19 +63,21 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
     // delete newEvent.time;
     console.log(newEvent)
     const options = {
-      method: 'POST',
+      method: event ? 'PATCH' : 'POST',
       headers: {
         Authorization: `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(newEvent)
     };
-    fetch(`${process.env.REACT_APP_API_URL}/events`, options)
+    const endpoint = event ? `/${event.id}` : '';
+    fetch(`${process.env.REACT_APP_API_URL}/events${endpoint}`, options)
       .then(resp => {
         if (!resp.ok) throw resp;
         return resp.json();
       }).then(data => {
-        eventState.add(data);
+        event ? eventState.update(data) : eventState.add(data);
+        setModal();
       }).catch(error => {
         console.log(error);
       });
@@ -92,7 +97,7 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
   return (
     <>
       <form onSubmit={handleFormSubmit}>
-        Add an Event
+        {event ? "Edit Event" : "Add an Event" }
         <Fieldset fieldsetProps={{}}>
           <Select label='Job: ' selectProps={{name: 'jobId', value: eventData.jobId, onChange: handleFormChange}}>
             <option value=''></option>

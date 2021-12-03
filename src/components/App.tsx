@@ -79,6 +79,10 @@ function App() {
         }).catch(error => {
           console.log(error);
         });
+    } else {
+      setJobs([]);
+      setCommunications([]);
+      setEvents([]);
     }
   }, [username]);
 

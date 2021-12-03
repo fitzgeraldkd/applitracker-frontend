@@ -75,6 +75,7 @@ const CalendarContainer = styled.div<{themeMode: 'light' | 'dark'}>`
     .event-date {
       font-weight: bold;
       text-decoration: underline;
+      text-shadow: 0 0 2px ${props => props.theme.colors[props.themeMode].link.text};
     }
 
     .react-calendar__navigation {
