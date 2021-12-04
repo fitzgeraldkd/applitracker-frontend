@@ -44,8 +44,8 @@ function JobTable({ jobState }: JobTableProps) {
       <span className='header'>Status</span>
       {jobState.records.map(job => (
         <React.Fragment key={job.id}>
-          <span><IconLink iconLinkProps={{onClick: () => handleFavoriteClick(job)}}>{job.favorite ? <StarIcon /> : <StarBorderIcon />}</IconLink></span>
-          <span><IconLink iconLinkProps={{onClick: () => setModal({modal: 'job', record: job})}}><EditIcon /></IconLink></span>
+          <span><IconLink tooltip={{position: 'right', text: job.favorite ? 'Unfavorite' : 'Favorite'}} iconLinkProps={{onClick: () => handleFavoriteClick(job)}}>{job.favorite ? <StarIcon /> : <StarBorderIcon />}</IconLink></span>
+          <span><IconLink tooltip={{position: 'right', text: 'Edit'}} iconLinkProps={{onClick: () => setModal({modal: 'job', record: job})}}><EditIcon /></IconLink></span>
           <span>{job.company}</span>
           <span>{job.position}</span>
           <span>{job.status.replace(/./, job.status[0].toUpperCase())}</span>
@@ -60,6 +60,7 @@ export default JobTable;
 const Table = styled.div`
   display: grid;
   grid-template-columns: 24px 24px auto auto auto;
+  grid-column-gap: 10px;
 
   .header {
     font-weight: bold;

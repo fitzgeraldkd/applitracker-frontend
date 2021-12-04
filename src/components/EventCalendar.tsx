@@ -1,21 +1,45 @@
-import Calendar, { CalendarTileProperties } from 'react-calendar';
+import Calendar, { CalendarProps, CalendarTileProperties, Detail, ViewCallbackProperties } from 'react-calendar';
 import styled from 'styled-components';
 import { useCallback, useContext, useState } from 'react';
 import { ThemeContext } from "../context/theme";
 import EventList from './EventList';
 import { EventRecordType, JobRecordType, StateContainer } from '../shared/types';
+import Button from './common/Button';
 
 interface EventCalendarProps {
   eventState: StateContainer<EventRecordType>,
   jobState: StateContainer<JobRecordType>
 };
 
+interface CalendarViewSettings {
+  activeStartDate: Date,
+  value: Date,
+  view: Detail
+}
+
 function EventCalendar({ eventState, jobState }: EventCalendarProps) {
   const { theme } = useContext(ThemeContext);
-  const [activeDay, setActiveDay] = useState(new Date());
+  const [calendarView, setCalendarView] = useState<CalendarViewSettings & CalendarProps>({
+    activeStartDate: new Date(),
+    value: new Date(),
+    view: 'month'
+  })
 
-  const selectDay = (newDay: Date) => {
-    setActiveDay(newDay);
+  const selectDay = (newDate: Date) => {
+    setCalendarView(currentView => Object.assign({...currentView}, {
+      activeStartDate: newDate,
+      value: newDate,
+      view: 'month'
+    }));
+  };
+
+  const changeActiveStartDate = (props: ViewCallbackProperties) => {
+    const newActiveStartDate = 'activeStartDate' in props ? props.activeStartDate : new Date();
+    const newView = 'view' in props ? props.view : 'month';
+    setCalendarView(currentView => Object.assign({...currentView}, {
+      activeStartDate: newActiveStartDate,
+      view: newView
+    }));
   };
 
   const eventDates = useCallback(() => {
@@ -34,9 +58,10 @@ function EventCalendar({ eventState, jobState }: EventCalendarProps) {
   return (
     <>
       <CalendarContainer themeMode={theme}>
-        <Calendar value={activeDay} onClickDay={selectDay} calendarType="US" tileClassName={tileClassName} />
+        <Button buttonProps={{onClick: () => selectDay(new Date())}}>Today</Button>
+        <Calendar {...calendarView} onActiveStartDateChange={changeActiveStartDate} onClickDay={selectDay} calendarType="US" tileClassName={tileClassName} />
       </CalendarContainer>
-      <EventList activeDay={activeDay} eventState={eventState} jobState={jobState} />
+      <EventList activeDay={calendarView.value} eventState={eventState} jobState={jobState} />
     </>
   );
 }
@@ -46,8 +71,11 @@ export default EventCalendar;
 const CalendarContainer = styled.div<{themeMode: 'light' | 'dark'}>`
   max-width: 350px;
   margin: auto;
+  text-align: center;
 
   .react-calendar {
+    margin-top: 10px;
+
     button {
       background-color: ${props => props.theme.colors[props.themeMode].button.background};
       color: ${props => props.theme.colors[props.themeMode].button.text};

@@ -34,15 +34,14 @@ function Header({ username, handleUsernameUpdate }: HeaderProps) {
             <CalendarTodayIcon />
           </IconLink>
         </Link>
+      </span>
+      <Link to='/'>
+        <h1>AppliTracker</h1>
+      </Link>
+      <span className='right-icons'>
         <IconLink tooltip={{position: 'bottom', text: theme === 'dark' ? 'Light Mode' : 'Dark Mode'}}>
           { theme === 'dark' ? <LightModeIcon onClick={() => setTheme('light')} /> : <DarkModeIcon onClick={() => setTheme('dark')} /> }
         </IconLink>
-        
-      </span>
-      <Link to='/'>
-      <h1>AppliTracker</h1>
-      </Link>
-      <span className='right-icons'>
         <IconLink tooltip={{position: 'bottom', text: username ? 'Logout' : 'Login'}}>
           { username === undefined ? <Link to='/login'><LoginIcon /></Link> : <LogoutIcon onClick={() => logout(handleUsernameUpdate)} /> }
         </IconLink>
@@ -54,7 +53,13 @@ function Header({ username, handleUsernameUpdate }: HeaderProps) {
 export default Header;
 
 const HeaderBar = styled.div<{themeMode: 'light' | 'dark'}>`
-  text-align: center;
+  /* text-align: center; */
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 20px;
+
   background-color: ${props => props.theme.colors[props.themeMode].header.background};
   color: ${props => props.theme.colors[props.themeMode].header.text};
   border-radius: 3px;
@@ -72,11 +77,18 @@ const HeaderBar = styled.div<{themeMode: 'light' | 'dark'}>`
     }
   }
 
-  .left-icons {
+  .left-icons, .right-icons {
+    display: flex;
+    justify-content: space-between;
+    max-width: 70px;
+    flex-grow: 1;
+  }
+
+  /* .left-icons {
     float: left;
   }
 
   .right-icons {
     float: right;
-  }
+  } */
 `;

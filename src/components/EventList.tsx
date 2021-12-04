@@ -57,7 +57,8 @@ export default EventList;
 
 const EventListGrid = styled.div`
   display: grid;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: 24px auto auto auto;
+  grid-column-gap: 10px;
 
   .header {
     grid-column: 1 / 6;

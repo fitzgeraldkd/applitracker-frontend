@@ -5,6 +5,7 @@ import Input from '../form/Input';
 import Select from '../form/Select';
 import Button from '../common/Button';
 import { JobRecordType, StateContainer, ValidRecordType } from '../../shared/types';
+import { sendRequest } from "../../shared/utils";
 
 interface JobFormProps {
   jobState: StateContainer<JobRecordType>,
@@ -12,6 +13,7 @@ interface JobFormProps {
 }
 
 function JobForm({ jobState, job }: JobFormProps) {
+  const [warnings, setWarnings] = useState<string[]>([])
   const [jobData, setJobData] = useState({
     company: job ? job.company : '',
     position: job ? job.position : '',
@@ -33,18 +35,13 @@ function JobForm({ jobState, job }: JobFormProps) {
       body: JSON.stringify(jobData)
     };
 
-    const endpoint = job ? `/${job.id}` : '';
-
-    fetch(`${process.env.REACT_APP_API_URL}/jobs${endpoint}`, options)
-      .then(resp => {
-        if (!resp.ok) throw resp;
-        return resp.json();
-      }).then(data => {
-        job ? jobState.update(data) : jobState.add(data);
-        setModal();
-      }).catch(error => {
-        console.log(error);
-      })
+    const endpoint = '/jobs' + (job ? `/${job.id}` : '');
+    const callback = (jobRecord: (JobRecordType & ValidRecordType)) => {
+      job ? jobState.update(jobRecord) : jobState.add(jobRecord);
+      setModal();
+    };
+    const catchCallback = (errors: string[]) => setWarnings(errors);
+    sendRequest<JobRecordType & ValidRecordType>({endpoint, callback, catchCallback, options})
   };
 
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +69,7 @@ function JobForm({ jobState, job }: JobFormProps) {
         <span></span>
         <Button buttonProps={{type: 'submit'}}>Submit</Button>
       </Fieldset>
+      {warnings.map(warning => <div>{warning}</div>)}
     </form>
   );
 }

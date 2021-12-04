@@ -34,7 +34,8 @@ const theme = {
       },
       app: {
         background: palette.darker,
-        text: palette.lightest
+        text: palette.lightest,
+        shadow: palette.light
       },
       header: {
         background: palette.darkest,
@@ -78,7 +79,8 @@ const theme = {
       },
       app: {
         background: palette.lighter,
-        text: palette.darkest
+        text: palette.darkest,
+        shadow: palette.dark
       },
       header: {
         background: palette.lightest,

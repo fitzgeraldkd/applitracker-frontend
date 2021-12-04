@@ -9,6 +9,7 @@ import Jobs from './Jobs';
 import UserForm from './UserForm';
 import EventCalendar from './EventCalendar';
 import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer, ValidRecordType } from '../shared/types';
+import { sendRequest } from '../shared/utils';
 
 function App() {
   const { theme } = useContext(ThemeContext);
@@ -21,20 +22,16 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem('jwt') !== null) {
+      const callback = (newUsername: string) => setUsername(newUsername);
+      const catchCallback = (errors: string[]) => {
+        errors.forEach(error => console.warn(error));
+      };
       const options = {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
       };
-  
-      fetch(`${process.env.REACT_APP_API_URL}/me`, options)
-        .then(resp => {
-          if (!resp.ok) throw resp;
-          return resp.json();
-        }).then(data => {
-          console.log(data);
-          setUsername(data.username);
-        });
+      sendRequest<string>({endpoint: '/me', callback, catchCallback, options})
     }
   }, [])
 
@@ -45,40 +42,20 @@ function App() {
           Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }
       };
-  
-      fetch(`${process.env.REACT_APP_API_URL}/jobs`, options)
-        .then(resp => {
-          if (!resp.ok) throw resp;
-          return resp.json();
-        })
-        .then(data => {
-          setJobs(data);
-        }).catch(error => {
-          console.log(error);
-          // TODO: wait for json to render
-        });
-  
-      fetch(`${process.env.REACT_APP_API_URL}/communications`, options)
-        .then(resp => {
-          if (!resp.ok) throw resp;
-          return resp.json();
-        })
-        .then(data => {
-          setCommunications(data);
-        }).catch(error => {
-          console.log(error);
-        });
-  
-      fetch(`${process.env.REACT_APP_API_URL}/events`, options)
-        .then(resp => {
-          if (!resp.ok) throw resp;
-          return resp.json();
-        })
-        .then(data => {
-          setEvents(data);
-        }).catch(error => {
-          console.log(error);
-        });
+      // const catchCallback = (errors: string[]) => errors.forEach(error => console.warn(error));
+
+      {
+        const callback = (jobRecords: (JobRecordType & ValidRecordType)[]) => setJobs(jobRecords);
+        sendRequest<(JobRecordType & ValidRecordType)[]>({endpoint: '/jobs', callback, options});
+      }
+      {
+        const callback = (communicationRecords: (CommunicationRecordType & ValidRecordType)[]) => setCommunications(communicationRecords);
+        sendRequest<(CommunicationRecordType & ValidRecordType)[]>({endpoint: '/communications', callback, options});
+      }
+      {
+        const callback = (eventRecords: (EventRecordType & ValidRecordType)[]) => setEvents(eventRecords);
+        sendRequest<(EventRecordType & ValidRecordType)[]>({endpoint: '/events', callback, options});
+      }
     } else {
       setJobs([]);
       setCommunications([]);
@@ -145,8 +122,10 @@ const Document = styled.div<{themeMode: ('light' | 'dark')}>`
   left: 0;
   top: 0;
 
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
 
   background-color: ${props => props.theme.colors[props.themeMode].body.background};
   

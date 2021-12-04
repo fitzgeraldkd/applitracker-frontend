@@ -7,3 +7,25 @@ export const logout = (handleUsernameUpdate: Function) => {
   // window.location.pathname = ('/login')
   handleUsernameUpdate()
 };
+
+interface SendRequestParams {
+  endpoint: string,
+  callback?: Function,
+  catchCallback?: Function,
+  options?: RequestInit | undefined
+}
+
+export const sendRequest = async <T, >({endpoint, callback=() => {}, catchCallback=() => {}, options}: SendRequestParams) => {
+  // TODO: automatically add JWT to headers if exists
+  const resp = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, options);
+  const data: T | {errors: string[]} = await resp.json();
+  if (resp.ok) {
+    callback(data as T);
+  } else if ('errors' in data) {
+    data.errors.forEach(error => console.warn(error));
+    catchCallback(data.errors);
+  } else {
+    console.error('Payload from backend does not match expected results.')
+    console.error(data);
+  }
+};

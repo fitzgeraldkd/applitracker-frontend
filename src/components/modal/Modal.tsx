@@ -31,10 +31,12 @@ export default Modal;
 
 const ModalBackground = styled.div`
   position: fixed;
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   background-color: #00000088;
-  z-index: 1;
+  z-index: 2;
 `;
 
 const ModalContent = styled.div<{themeMode: 'light' | 'dark'}>`
@@ -42,7 +44,10 @@ const ModalContent = styled.div<{themeMode: 'light' | 'dark'}>`
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
+  padding: 15px;
+  border-radius: 3px;
   background-color: ${props => props.theme.colors[props.themeMode].app.background};
   color: ${props => props.theme.colors[props.themeMode].app.text};
-z-index: 2;
+  box-shadow: 0 0 5px ${props => props.theme.colors[props.themeMode].app.shadow};
+  z-index: 3;
 `;

@@ -36,4 +36,15 @@ const InputField = styled.input<InputProps['inputProps']>`
 
   background-color: ${props => props.theme.colors[props.themeMode].input.background};
   color: ${props => props.theme.colors[props.themeMode].input.text};
+
+  /* &[type="checkbox"] {
+    display: none;
+    ::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: ${props => props.theme.colors[props.themeMode].input.background};
+    }
+  } */
 `;
