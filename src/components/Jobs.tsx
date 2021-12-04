@@ -1,5 +1,6 @@
 import { useContext } from "react";
 // import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import JobTable from './JobTable';
 import Button from './common/Button';
 import { ModalContext } from '../context/modal';
@@ -14,7 +15,7 @@ function Body({ jobState, username }: BodyProps) {
   const { setModal } = useContext(ModalContext);
   // const navigate = useNavigate();
 
-  if (!username) return <>You must be logged in.</>;
+  if (!username) return <>You must be <Link className='text-link' to='/login'>logged in</Link> to interact with job listings.</>;
 
   return (
     <>

@@ -18,6 +18,7 @@ interface EventFormProps {
 };
 
 function EventForm({ eventState, jobState, event, options }: EventFormProps) {
+  const [disableForm, setDisableForm] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
   const getDateValue = (date: Date) => {
     return [
@@ -67,7 +68,11 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
       event ? eventState.update(eventRecord) : eventState.add(eventRecord);
       setModal();
     };
-    const catchCallback = (errors: string[]) => setWarnings(errors);
+    const catchCallback = (errors: string[]) => {
+      setDisableForm(false);
+      setWarnings(errors);
+    };
+    setDisableForm(true);
     sendRequest<EventRecordType & ValidRecordType>({endpoint, callback, catchCallback, options});
   };
 
@@ -85,7 +90,7 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
   return (
     <form onSubmit={handleFormSubmit}>
       {event ? "Edit Event" : "Add an Event" }
-      <Fieldset fieldsetProps={{}}>
+      <Fieldset fieldsetProps={{disabled: disableForm}}>
         <Select label='Job: ' selectProps={{name: 'jobId', value: eventData.jobId, onChange: handleFormChange}}>
           <option value=''></option>
           {jobOptions}
@@ -97,7 +102,7 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
         <span></span>
         <Button buttonProps={{type: 'submit'}}>Submit</Button>
       </Fieldset>
-      {warnings.map(warning => <div>{warning}</div>)}
+      {warnings.map(warning => <div key={warning}>{warning}</div>)}
     </form>
   );
 }

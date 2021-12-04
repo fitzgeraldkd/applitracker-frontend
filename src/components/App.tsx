@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ThemeContext } from "../context/theme";
 import Modal from './modal/Modal';
 import Header from './Header';
+import Footer from './Footer';
 import Jobs from './Jobs';
 import UserForm from './UserForm';
 import EventCalendar from './EventCalendar';
@@ -110,6 +111,7 @@ function App() {
             <Route path='calendar' element={<EventCalendar eventState={eventState} jobState={jobState} />} />
           </Routes>
         </Body>
+        <Footer />
       </AppContainer>
     </Document>
   );
@@ -131,6 +133,18 @@ const Document = styled.div<{themeMode: ('light' | 'dark')}>`
   
   & * {
     transition: color 0.1s, background-color 0.1s;
+  }
+
+  .text-link {
+    text-decoration: none;
+    border-radius: 3px;
+    padding: 1px 5px;
+    color: ${props => props.theme.colors[props.themeMode].link.text};
+
+    &:hover {
+      color: ${props => props.theme.colors[props.themeMode].link.textHover};
+      background-color: ${props => props.theme.colors[props.themeMode].link.backgroundHover};
+    }
   }
 
 `;

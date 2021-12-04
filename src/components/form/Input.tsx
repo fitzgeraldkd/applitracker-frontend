@@ -5,7 +5,7 @@ import { ThemeContext } from '../../context/theme';
 // function Input({ type='text', name, id, onChange, label }) {
 
 interface InputProps {
-  label: string,
+  label?: string,
   inputProps: {
     [prop: string]: any
   }

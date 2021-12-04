@@ -13,7 +13,9 @@ interface JobFormProps {
 }
 
 function JobForm({ jobState, job }: JobFormProps) {
-  const [warnings, setWarnings] = useState<string[]>([])
+  const [disableForm, setDisableForm] = useState(false);
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [allowDelete, setAllowDelete] = useState(false);
   const [jobData, setJobData] = useState({
     company: job ? job.company : '',
     position: job ? job.position : '',
@@ -40,7 +42,11 @@ function JobForm({ jobState, job }: JobFormProps) {
       job ? jobState.update(jobRecord) : jobState.add(jobRecord);
       setModal();
     };
-    const catchCallback = (errors: string[]) => setWarnings(errors);
+    const catchCallback = (errors: string[]) => {
+      setDisableForm(false);
+      setWarnings(errors);
+    };
+    setDisableForm(true);
     sendRequest<JobRecordType & ValidRecordType>({endpoint, callback, catchCallback, options})
   };
 
@@ -51,12 +57,44 @@ function JobForm({ jobState, job }: JobFormProps) {
     }));
   };
 
+  const handleAllowDelete = (e: ChangeEvent<HTMLInputElement>) => {
+    setAllowDelete(e.target.checked);
+  };
+
+  const handleDelete = () => {
+    if (!job) return null;
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`
+      }
+    };
+    const endpoint = `/jobs/${job.id}`;
+    const callback = () => {
+      jobState.delete(job);
+      setModal();
+    }
+    const catchCallback = (errors: string[]) => {
+      setDisableForm(false);
+      setWarnings(errors);
+    };
+    setDisableForm(true);
+    sendRequest<null>({endpoint, callback, catchCallback, options})
+  }
+
   const statusOptions = ['applying', 'pending', 'interviewing', 'offered', 'rejected'];
   
+  const deleteInput = (
+    <>
+      <Input inputProps={{name: 'delete', type:'checkbox', checked: allowDelete, onChange: handleAllowDelete}} />
+      <Button buttonProps={{type: 'button', disabled: !allowDelete, onClick: handleDelete}}>Delete</Button>
+    </>
+  )
+
   return (
     <form onSubmit={handleFormSubmit}>
       {job ? "Edit Job" : "Add a Job" }
-      <Fieldset fieldsetProps={{}}>
+      <Fieldset fieldsetProps={{disabled: disableForm}}>
         <Input label='Company:' inputProps={{name: 'company', value: jobData.company, onChange: handleFormChange}} />
         <Input label='Position:' inputProps={{name: 'position', value: jobData.position, onChange: handleFormChange}} />
         <Select label='Status:' selectProps={{name: 'status', value: jobData.status, onChange: handleFormChange}}>
@@ -68,8 +106,9 @@ function JobForm({ jobState, job }: JobFormProps) {
         <Input label='Favorite:' inputProps={{name: 'favorite', type:'checkbox', checked: jobData.favorite, onChange: handleFormChange}} />
         <span></span>
         <Button buttonProps={{type: 'submit'}}>Submit</Button>
+        {job ? deleteInput : null}
       </Fieldset>
-      {warnings.map(warning => <div>{warning}</div>)}
+      {warnings.map(warning => <div key={warning}>{warning}</div>)}
     </form>
   );
 }

@@ -131,6 +131,18 @@ const CalendarContainer = styled.div<{themeMode: 'light' | 'dark'}>`
     }
 
     .react-calendar__viewContainer {
+      .react-calendar__year-view {
+        .react-calendar__year-view__months {
+          display: grid !important;
+          grid-template-columns: 33% 33% 33%;
+          justify-content: space-between;
+
+          .react-calendar__tile {
+            max-width: initial !important;
+          }
+        }
+      }
+
       .react-calendar__month-view {
         .react-calendar__month-view__weekdays {
           text-align: center;

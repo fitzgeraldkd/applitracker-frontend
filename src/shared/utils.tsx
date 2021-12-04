@@ -18,14 +18,19 @@ interface SendRequestParams {
 export const sendRequest = async <T, >({endpoint, callback=() => {}, catchCallback=() => {}, options}: SendRequestParams) => {
   // TODO: automatically add JWT to headers if exists
   const resp = await fetch(`${process.env.REACT_APP_API_URL}${endpoint}`, options);
-  const data: T | {errors: string[]} = await resp.json();
-  if (resp.ok) {
-    callback(data as T);
-  } else if ('errors' in data) {
-    data.errors.forEach(error => console.warn(error));
-    catchCallback(data.errors);
+  if (resp.statusText === 'No Content') {
+    callback()
   } else {
-    console.error('Payload from backend does not match expected results.')
-    console.error(data);
+    const data: T | {errors: string[]} = await resp.json();
+    console.log(data);
+    if (resp.ok) {
+      callback(data as T);
+    } else if (data && 'errors' in data) {
+      data.errors.forEach(error => console.warn(error));
+      catchCallback(data.errors);
+    } else {
+      console.error('Payload from backend does not match expected results.')
+      console.error(data);
+    }
   }
 };

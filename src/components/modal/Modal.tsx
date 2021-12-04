@@ -4,6 +4,7 @@ import { ModalContext } from '../../context/modal';
 import { ThemeContext } from "../../context/theme";
 import EventForm from './EventForm';
 import JobForm from './JobForm';
+import Help from './Help';
 import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer } from '../../shared/types';
 
 interface ModalProps {
@@ -22,6 +23,7 @@ function Modal({ jobState, communicationState, eventState }: ModalProps) {
       <ModalContent themeMode={theme}>
         {modal.modal === 'event' && <EventForm eventState={eventState} jobState={jobState} event={modal.record} options={modal.options} />}
         {modal.modal === 'job' && <JobForm jobState={jobState} job={modal.record} />}
+        {modal.modal === 'help' && <Help />}
       </ModalContent>
     </>
   );
