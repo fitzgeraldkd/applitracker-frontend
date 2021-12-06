@@ -80,7 +80,7 @@ function JobForm({ jobState, job }: JobFormProps) {
     };
     setDisableForm(true);
     sendRequest<null>({endpoint, callback, catchCallback, options})
-  }
+  };
 
   const statusOptions = ['applying', 'pending', 'interviewing', 'offered', 'rejected'];
   
@@ -89,7 +89,7 @@ function JobForm({ jobState, job }: JobFormProps) {
       <Input inputProps={{name: 'delete', type:'checkbox', checked: allowDelete, onChange: handleAllowDelete}} />
       <Button buttonProps={{type: 'button', disabled: !allowDelete, onClick: handleDelete}}>Delete</Button>
     </>
-  )
+  );
 
   return (
     <form onSubmit={handleFormSubmit}>

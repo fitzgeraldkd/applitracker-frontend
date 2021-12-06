@@ -31,6 +31,7 @@ export const sendRequest = async <T, >({endpoint, callback=() => {}, catchCallba
     } else {
       console.error('Payload from backend does not match expected results.')
       console.error(data);
+      catchCallback(['Server error.'])
     }
   }
 };

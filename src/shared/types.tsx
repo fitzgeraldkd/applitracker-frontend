@@ -10,7 +10,13 @@ export type ValidRecordType = {
 };
 
 export type CommunicationRecordType = {
-  id?: number
+  id?: number,
+  heading: string,
+  description: string,
+  time: Date,
+  received: boolean,
+  contact: string,
+  job_id: number
 };
 
 export type EventRecordType = {

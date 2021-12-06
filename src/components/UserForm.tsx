@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Fieldset from "./form/Fieldset";
 import Input from './form/Input';
 import Button from './common/Button';
+import { sendRequest } from "../shared/utils";
 
 // TODO: these props will probably not be needed once auth added
 interface UserFormProps {
@@ -16,7 +17,7 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
     passwordConfirm: ''
   });
 
-  const [message] = useState('');
+  const [warnings, setWarnings] = useState<string[]>([]);
   const [newUser, setNewUser] = useState(false);
   const [disableForm, setDisableForm] = useState(false);
   const navigate = useNavigate();
@@ -41,19 +42,26 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
       })
     };
 
+    const endpoint = '/login';
+    // TODO: set types for this callback
+    const callback = (user: any) => setLoggedInUser(user);
+    const catchCallback = (errors: string[]) => {
+      setDisableForm(false);
+      setWarnings(errors);
+    }
     setDisableForm(true);
-
-    fetch(`${process.env.REACT_APP_API_URL}/login`, options)
-      .then(resp => {
-        if (!resp.ok) throw resp;
-        return resp.json()
-      })
-      .then(data => {
-        setLoggedInUser(data);
-      }).catch(error => {
-        console.log(error);
-        setDisableForm(false);
-      });
+    sendRequest<any>({endpoint, callback, catchCallback, options});
+    // fetch(`${process.env.REACT_APP_API_URL}/login`, options)
+    //   .then(resp => {
+    //     if (!resp.ok) throw resp;
+    //     return resp.json()
+    //   })
+    //   .then(data => {
+    //     setLoggedInUser(data);
+    //   }).catch(error => {
+    //     console.log(error);
+    //     setDisableForm(false);
+    //   });
   };
 
   const handleUserCreate = (e: FormEvent<HTMLFormElement>) => {
@@ -71,18 +79,26 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
       })
     };
 
+    const endpoint = '/users';
+    // TODO: set types for this callback
+    const callback = (user: any) => setLoggedInUser(user);
+    const catchCallback = (errors: string[]) => {
+      setDisableForm(false);
+      setWarnings(errors);
+    }
     setDisableForm(true);
-
-    fetch(`${process.env.REACT_APP_API_URL}/users`, options)
-      .then(resp => {
-        if (!resp.ok) throw resp;
-        return resp.json();
-      }).then(data => {
-        setLoggedInUser(data);
-      }).catch(error => {
-        console.log(error);
-        setDisableForm(false);
-      });
+    sendRequest<any>({endpoint, callback, catchCallback, options});
+    // fetch(`${process.env.REACT_APP_API_URL}/users`, options)
+    //   .then(resp => {
+    //     if (!resp.ok) throw resp;
+    //     return resp.json();
+    //   }).then(data => {
+    //     setLoggedInUser(data);
+    //   }).catch(error => {
+    //     console.log(error);
+    //     setDisableForm(false);
+    //     setWarnings(error)
+    //   });
   };
 
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -100,8 +116,8 @@ function UserForm({ username, handleUsernameUpdate }: UserFormProps) {
           <Button buttonProps={{type: 'submit'}}>{newUser ? 'Create Account' : 'Log In'}</Button>
         </Fieldset>
       </form>
-      <span>{message}</span>
       {newUser ? <Button buttonProps={{onClick:() => setNewUser(false)}}>Have an account?</Button> : <Button buttonProps={{onClick:() => setNewUser(true)}}>Need an account?</Button>}
+      {warnings.map(warning => <div key={warning}>{warning}</div>)}
     </>
   );
 }

@@ -36,6 +36,15 @@ function EventList({ activeDay, eventState, jobState }: EventListProps) {
         </React.Fragment>
       );
     });
+  
+  if (events.length === 0) {
+    return (
+      <>
+      <Button buttonProps={{onClick: () => setModal({modal: 'event', options: {date: activeDay}})}}>Add Event</Button>
+        <div>No events for this day.</div>
+      </>
+    );
+  }
 
   return (
     <EventListGrid>

@@ -24,7 +24,7 @@ function Header({ username, handleUsernameUpdate }: HeaderProps) {
     <HeaderBar themeMode={theme}>
       <span className='left-icons'>
         {/* <GridViewIcon /> */}
-        <Link to='/'>
+        <Link to='/jobs'>
           <IconLink tooltip={{position: 'bottom', text: 'Jobs'}}>
             <ListAltIcon />
           </IconLink>

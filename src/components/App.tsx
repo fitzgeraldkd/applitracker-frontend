@@ -7,6 +7,7 @@ import Modal from './modal/Modal';
 import Header from './Header';
 import Footer from './Footer';
 import Jobs from './Jobs';
+import JobDetails from './JobDetails';
 import UserForm from './UserForm';
 import EventCalendar from './EventCalendar';
 import { CommunicationRecordType, EventRecordType, JobRecordType, StateContainer, ValidRecordType } from '../shared/types';
@@ -107,8 +108,10 @@ function App() {
         <Body>
           <Routes>
             <Route path="/" element={<Jobs jobState={jobState} username={username} />} />
+            <Route path="jobs" element={<Jobs jobState={jobState} username={username} />} />
+            <Route path='jobs/:id' element={<JobDetails jobState={jobState} communicationState={communicationState} />} />
             <Route path="login" element={<UserForm username={username} handleUsernameUpdate={handleUsernameUpdate} />} />
-            <Route path='calendar' element={<EventCalendar eventState={eventState} jobState={jobState} />} />
+            <Route path='calendar' element={<EventCalendar eventState={eventState} jobState={jobState} username={username} />} />
           </Routes>
         </Body>
         <Footer />
@@ -130,9 +133,10 @@ const Document = styled.div<{themeMode: ('light' | 'dark')}>`
   box-sizing: border-box;
 
   background-color: ${props => props.theme.colors[props.themeMode].body.background};
+  transition: color 0.15s, background-color 0.15s;
   
   & * {
-    transition: color 0.1s, background-color 0.1s;
+    transition: color 0.15s, background-color 0.15s;
   }
 
   .text-link {

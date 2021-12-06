@@ -20,6 +20,7 @@ interface EventFormProps {
 function EventForm({ eventState, jobState, event, options }: EventFormProps) {
   const [disableForm, setDisableForm] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
+  const [allowDelete, setAllowDelete] = useState(false);
   const getDateValue = (date: Date) => {
     return [
       date.getFullYear(), 
@@ -76,6 +77,27 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
     sendRequest<EventRecordType & ValidRecordType>({endpoint, callback, catchCallback, options});
   };
 
+  const handleDelete = () => {
+    if (!event) return null;
+    const options = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`
+      }
+    };
+    const endpoint = `/events/${event.id}`;
+    const callback = () => {
+      eventState.delete(event);
+      setModal();
+    }
+    const catchCallback = (errors: string[]) => {
+      setDisableForm(false);
+      setWarnings(errors);
+    };
+    setDisableForm(true);
+    sendRequest<null>({endpoint, callback, catchCallback, options})
+  };
+
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEventData(currentEventData => Object.assign({
       ...currentEventData,
@@ -83,9 +105,20 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
     }));
   };
 
+  const handleAllowDelete = (e: ChangeEvent<HTMLInputElement>) => {
+    setAllowDelete(e.target.checked);
+  };
+
   const jobOptions = jobState.records.map(job => (
     <option key={job.id} value={job.id}>{job.company} ({job.position})</option>
   ));
+
+  const deleteInput = (
+    <>
+      <Input inputProps={{name: 'delete', type:'checkbox', checked: allowDelete, onChange: handleAllowDelete}} />
+      <Button buttonProps={{type: 'button', disabled: !allowDelete, onClick: handleDelete}}>Delete</Button>
+    </>
+  );
 
   return (
     <form onSubmit={handleFormSubmit}>
@@ -101,6 +134,7 @@ function EventForm({ eventState, jobState, event, options }: EventFormProps) {
         <Input label='Time:' inputProps={{type: 'time', name: 'time', value: eventData.time, onChange: handleFormChange}} />
         <span></span>
         <Button buttonProps={{type: 'submit'}}>Submit</Button>
+        {event ? deleteInput : null}
       </Fieldset>
       {warnings.map(warning => <div key={warning}>{warning}</div>)}
     </form>

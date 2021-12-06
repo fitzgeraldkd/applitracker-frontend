@@ -1,6 +1,7 @@
 import Calendar, { CalendarProps, CalendarTileProperties, Detail, ViewCallbackProperties } from 'react-calendar';
 import styled from 'styled-components';
 import { useCallback, useContext, useState } from 'react';
+import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/theme";
 import EventList from './EventList';
 import { EventRecordType, JobRecordType, StateContainer } from '../shared/types';
@@ -8,7 +9,8 @@ import Button from './common/Button';
 
 interface EventCalendarProps {
   eventState: StateContainer<EventRecordType>,
-  jobState: StateContainer<JobRecordType>
+  jobState: StateContainer<JobRecordType>,
+  username: string | undefined
 };
 
 interface CalendarViewSettings {
@@ -17,7 +19,7 @@ interface CalendarViewSettings {
   view: Detail
 }
 
-function EventCalendar({ eventState, jobState }: EventCalendarProps) {
+function EventCalendar({ eventState, jobState, username }: EventCalendarProps) {
   const { theme } = useContext(ThemeContext);
   const [calendarView, setCalendarView] = useState<CalendarViewSettings & CalendarProps>({
     activeStartDate: new Date(),
@@ -54,6 +56,8 @@ function EventCalendar({ eventState, jobState }: EventCalendarProps) {
     }
     return null;
   };
+
+  if (!username) return <>You must be <Link className='text-link' to='/login'>logged in</Link> to interact with job listings.</>;
 
   return (
     <>

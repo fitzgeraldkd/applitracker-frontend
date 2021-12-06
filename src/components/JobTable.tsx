@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { Link } from "react-router-dom";
 import styled from 'styled-components';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -35,6 +36,8 @@ function JobTable({ jobState }: JobTableProps) {
       })
   }
 
+  if (jobState.records.length === 0) return <div>No jobs have been added yet.</div>;
+
   return (
     <Table>
       <span className='header'></span>
@@ -46,7 +49,7 @@ function JobTable({ jobState }: JobTableProps) {
         <React.Fragment key={job.id}>
           <span><IconLink tooltip={{position: 'right', text: job.favorite ? 'Unfavorite' : 'Favorite'}} iconLinkProps={{onClick: () => handleFavoriteClick(job)}}>{job.favorite ? <StarIcon /> : <StarBorderIcon />}</IconLink></span>
           <span><IconLink tooltip={{position: 'right', text: 'Edit'}} iconLinkProps={{onClick: () => setModal({modal: 'job', record: job})}}><EditIcon /></IconLink></span>
-          <span>{job.company}</span>
+          <span><Link className='text-link' to={`/jobs/${job.id}`}>{job.company}</Link></span>
           <span>{job.position}</span>
           <span>{job.status.replace(/./, job.status[0].toUpperCase())}</span>
         </React.Fragment>
