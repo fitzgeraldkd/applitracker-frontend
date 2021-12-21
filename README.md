@@ -14,6 +14,10 @@ Each job can be labelled with a status of the application (such as pending for w
 
 A calendar page is also provided so the user can list scheduled interview dates or application deadlines for their own reference. Each event is tied to a specific job application.
 
+## Demonstration
+
+[Click here](https://www.youtube.com/watch?v=EbsAC_7TzoQ) to see a short demonstration I recorded for this project. 
+
 ## Installation (Local)
 
 > Before running the front-end, make sure the back-end server is running (see instructions in the [back-end repository's README](https://github.com/fitzgeraldkd/applitracker-backend)).
