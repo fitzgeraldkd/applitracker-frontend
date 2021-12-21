@@ -16,7 +16,7 @@ A calendar page is also provided so the user can list scheduled interview dates 
 
 ## Demonstration
 
-[Click here](https://www.youtube.com/watch?v=EbsAC_7TzoQ) to see a short demonstration I recorded for this project. 
+[:arrow_forward: Click here](https://www.youtube.com/watch?v=EbsAC_7TzoQ) to see a short demonstration I recorded for this project. 
 
 ## Installation (Local)
 
